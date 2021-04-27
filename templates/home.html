@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+</head>
+<body>
+    <div id="open">
+        <h1>Welcome to the Twitter Ticker Dashboard</h1>
+        <h3>Please select a Ticker symbol from the drop-down menu to view the closing prices and Tweets
+            for these publicly traded companies</h3>
+
+    </div>
+    <div id="select">
+         <form id="form1" action="/graph" method="POST" enctype="multipart/form-data">
+
+        <select id="tickerDropDown" name="tickers">
+            {% for tick in tickers %}
+            <option value= "{{tick}}" SELECTED>{{tick}}</option>"
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Submit">
+    </form>
+    </div>
+</body>
+
+<style>
+    body{
+        background-color: #B8C4BB;
+    }
+
+    #select{
+        padding-top: 100px;
+        display: block;
+        justify-content: center;
+        text-align: center;
+    }
+
+    #open{
+        text-align: center;
+        padding-top: 200px;
+    }
+</style>
+</html>

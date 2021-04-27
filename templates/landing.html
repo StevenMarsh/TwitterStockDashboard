@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Landing Page</title>
+</head>
+<body>
+
+    <div id="result">
+        {% if tickChoice is defined %}
+         <h1 id="company">{{ tickChoice }} </h1>
+        {% endif %}
+     </div>
+    <div class="flex-container">
+        <div id = "graph">
+            {% if plot_data %}
+                <img src="data:image/png;base64,{{plot_data}}">
+            {% endif %}
+
+        </div>
+        <div id="filter">
+             <div id="tweets">
+
+                {% if twitter %}
+                    {% for tweet in twitter %}
+                    <div class="tweet"><p id = "tweetDate">{{tweet[0]}} </p>{{tweet[1]}}</div>
+                    {% endfor %}
+                {% endif %}
+
+             </div>
+            <div id="rangeSearch">
+                <p id="instructions">Pick a range to search Tweets and Adjusted Closing Price</p>
+                <form id="form2" action="/graph" method="POST" enctype="multipart/form-data">
+
+                    <select id="dates" name="firstdate">
+                        {% for date in unique_dates %}
+                        <option value= "{{date}}">{{date}}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="dates2" name="enddate">
+                        {% for date in unique_dates %}
+                        <option value= "{{date}}">{{date}}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="dates3" name="tck">
+                        <option value= "{{choice}}">{{choice}}</option>
+                    </select>
+
+                    <input type="submit" value="Submit">
+                 </form>
+                <div class = "classrange">
+                    <div id="labels">
+                        <div id="datelabel">Date</div>
+                        <div id="closelabel">Close Price</div>
+                        <div id="tweetlabel">Tweet</div>
+                    </div>
+                    {% if daterange %}
+                        {% for entry in daterange %}
+                        <div class="num">
+                            <div class="rangedate">{{entry[0]}}</div>
+                            <div class ="adjclose">{{entry[1]}}</div>
+                            <div class="tweetrange">
+                                {% for tweet in entry[2] %}
+                                <div class="subtweet"> - {{tweet}}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div id="formDiv">
+         <form id="form1" action="/graph" method="POST" enctype="multipart/form-data">
+
+            <select id="tickerDropDown" name="tickers">
+                {% for tick in tickers %}
+                <option value= "{{tick}}" SELECTED>{{tick}}</option>
+                {% endfor %}
+            </select>
+
+            <input type="submit" value="Submit">
+         </form>
+    </div>
+
+
+</body>
+<style>
+    body{
+        background-color: #B8C4BB;
+    }
+
+    #graph{
+        width: 60%;
+        border-style: solid;
+        border-color: #C9D6EA;
+        height: auto;
+    }
+
+    #tweets{
+        background-color: white;
+        overflow-y: scroll;
+        border: 2px solid black;
+        height: 250px;
+    }
+
+    #filter{
+        width: 40%;
+        border-style: solid;
+        border-color: #C9D6EA;
+    }
+
+    .flex-container{
+        display: flex;
+        height: 250px;
+        width: 100%;
+
+    }
+
+    #company{
+        text-align:center;
+        font: American-Typewriter;
+    }
+
+    img {
+        width: 100%;
+        height: 600px;
+    }
+
+    .tweet {
+        background-color:white;
+        border-bottom: 1px solid black;
+    }
+
+    #formDiv {
+        padding-top: 450px;
+        display: block;
+        text-align: center;
+    }
+
+    #tweetDate{
+        font-weight: bold;
+    }
+
+    .classrange{
+        height: 250px;
+        overflow-y: scroll;
+        border: 2px solid black;
+    }
+
+    #dates3{
+        display: none;
+    }
+
+    .num{
+        display:flex;
+        background-color: white;
+        border-bottom: 1px solid black;
+    }
+
+    .rangedate{
+
+        width: 10% !important;
+        border-right: 1px solid black;
+    }
+
+    .adjclose{
+
+        width: 10% !important;
+        text-align: center;
+        border-right: 1px solid black;
+    }
+
+    .subtweet{
+        padding-bottom: 10px;
+    }
+
+    .tweetrange{
+        flex: 1;
+    }
+
+    #datelabel, #closelabel{
+        width: 10% !important;
+        background-color: #C9D6EA;
+        border-right: 1px solid black;
+
+    }
+
+    #tweetlabel{
+        padding-left: 20px;
+        background-color: #C9D6EA;
+    }
+
+    #labels{
+        background-color: #C9D6EA;
+        display: flex;
+    }
+
+    #result{
+        padding-top: 50px;
+    }
+
+</style>
+</html>
