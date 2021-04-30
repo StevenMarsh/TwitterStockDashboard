@@ -10,6 +10,29 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 
 
+def cleanNum(row):
+    if "ticker" in str(row):
+        closePriceList = []
+        dateList = []
+        for key in row.asDict().keys():
+
+            try:
+
+                num = row.asDict()[key].ticker.strip('[').strip(']').split(',')[0]
+                print(key, num)
+                closePriceList.append(round(float(num), 3))
+                dateList.append(key)
+
+            except ValueError as ve:
+                pass
+
+            except AttributeError as ae:
+                pass
+
+        return closePriceList, dateList
+
+
+
 
 app = Flask(__name__)
 app.debug = True
@@ -55,34 +78,23 @@ def getChoice():
             dataDict = {}
             data = response.json()
 
-            # with open('data.json', 'w') as outfile:
-            #     json.dump(data, outfile, indent=4)
-            #
-            # tJson = spark.read.json('data.json', multiLine=True)
-            #
+            # parallel processing respones JSON with dataframe to do data conversion
 
+            with open('data.json', 'w') as outfile:
+                json.dump(data, outfile, indent=4)
+
+            tJson = spark.read.json('data.json', multiLine=True)
+
+            tickJson = tJson.rdd.map(cleanNum)
+
+
+            y = tickJson.collect()[0][0]
+            x = tickJson.collect()[0][1]
             for row in data:
 
                 dataDict[row] = data[row]
 
-            y = []
-            x = []
-            for dates in dataDict.keys():
-
-                try:
-
-                    # df = tJson.where(tJson[dates == dates])[["ticker"]]
-                    # print(df.show(2))
-                    # print(tJson[["ticker"]].show(2))
-                    stockStuff = data[dates]["ticker"].strip('[').strip(']').split(',')
-                    closePrice = round(float(stockStuff[0]), 2)
-
-                    y.append(closePrice)
-                    x.append(dates)
-                except KeyError as ke:
-                    print("No ticker for today found")
-
-
+    
             fig = Figure()
             ax = fig.subplots()
             ax.set_title(tick)
